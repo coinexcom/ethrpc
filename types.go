@@ -120,6 +120,7 @@ func (log *Log) UnmarshalJSON(data []byte) error {
 
 // FilterParams - Filter parameters object
 type FilterParams struct {
+	BlockHash string     `json:"blockhash,omitempty"`
 	FromBlock string     `json:"fromBlock,omitempty"`
 	ToBlock   string     `json:"toBlock,omitempty"`
 	Address   []string   `json:"address,omitempty"`
