@@ -321,3 +321,60 @@ func (proxy *proxyBlockWithoutTransactions) toBlock() Block {
 
 	return block
 }
+
+type proxyTraceTransaction struct {
+	BlockHash           string `json:"blockHash"`
+	BlockNumber         int    `json:"blockNumber"`
+	Subtraces           int    `json:"subtraces"`
+	TransactionHash     string `json:"transactionHash"`
+	TransactionPosition int    `json:"transactionPosition"`
+	Type                string `json:"type"`
+	Action              struct {
+		CallType string `json:"callType"`
+		From     string `json:"from"`
+		To       string `json:"to"`
+		Input    string `json:"input"`
+		Value    hexBig `json:"value"`
+		Gas      hexInt `json:"gas"`
+	} `json:"action"`
+	Result struct {
+		GasUsed hexInt `json:"gasUsed"`
+		Output  string `json:"output"`
+	} `json:"result"`
+	TraceAddress []int `json:"traceAddress"`
+}
+
+// TraceTransaction parity tracing module trace_block command
+type TraceTransaction struct {
+	BlockHash           string
+	BlockNumber         int
+	Subtraces           int
+	TransactionHash     string
+	TransactionPosition int
+	Type                string
+	Action              struct {
+		CallType string
+		From     string
+		To       string
+		Input    string
+		Value    big.Int
+		Gas      int
+	}
+	Result struct {
+		GasUsed int
+		Output  string
+	}
+	TraceAddress []int
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface.
+func (t *TraceTransaction) UnmarshalJSON(data []byte) error {
+	proxy := new(proxyTraceTransaction)
+	if err := json.Unmarshal(data, proxy); err != nil {
+		return err
+	}
+
+	*t = *(*TraceTransaction)(unsafe.Pointer(proxy))
+
+	return nil
+}

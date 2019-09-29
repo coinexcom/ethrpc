@@ -503,6 +503,13 @@ func (rpc *EthRPC) EthGetLogs(params FilterParams) ([]Log, error) {
 	return logs, err
 }
 
+// ParityTraceBlock returns an array of all logs matching a given filter object.
+func (rpc *EthRPC) ParityTraceBlock(number int) ([]TraceTransaction, error) {
+	var logs = []TraceTransaction{}
+	err := rpc.call("trace_block", &logs, IntToHex(number))
+	return logs, err
+}
+
 // Eth1 returns 1 ethereum value (10^18 wei)
 func (rpc *EthRPC) Eth1() *big.Int {
 	return Eth1()

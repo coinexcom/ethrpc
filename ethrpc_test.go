@@ -1148,6 +1148,52 @@ func (s *EthRPCTestSuite) TestEthUninstallFilter() {
 	s.Require().Equal(boolRes, uninstall)
 }
 
+func (s *EthRPCTestSuite) TestGetTraceBlock() {
+	number := 149817
+	result := `[{
+		"action": {
+		  "callType": "call",
+		  "from": "0x582f117659196232c3838292e4f7514d97f7284a",
+		  "gas": "0x0",
+		  "input": "0x",
+		  "to": "0x60d85853f4d465d150710bd1e74593d588d0ae63",
+		  "value": "0x4c504f09b5daa200"
+		},
+		"blockHash": "0x388a7248cfd412269a370c6703c8062db1b3bd3635da441e9388a8f7637936c4",
+		"blockNumber": 149817,
+		"result": {
+		  "gasUsed": "0x0",
+		  "output": "0x"
+		},
+		"subtraces": 0,
+		"traceAddress": [],
+		"transactionHash": "0x040c48a8b70d2d6d5fdebba5a85e5fc0d6167491691c866635165185ad94d88e",
+		"transactionPosition": 0,
+		"type": "call"
+	  }]`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "trace_block")
+		s.paramsEqual(body, fmt.Sprintf(`["0x24939"]`))
+	})
+
+	traceBlock, err := s.rpc.ParityTraceBlock(number)
+	s.Require().Nil(err)
+	s.Require().Equal("0x388a7248cfd412269a370c6703c8062db1b3bd3635da441e9388a8f7637936c4", traceBlock[0].BlockHash)
+	s.Require().Equal(149817, traceBlock[0].BlockNumber)
+	s.Require().Equal(0, traceBlock[0].Subtraces)
+	s.Require().Equal("0x040c48a8b70d2d6d5fdebba5a85e5fc0d6167491691c866635165185ad94d88e", traceBlock[0].TransactionHash)
+	s.Require().Equal(0, traceBlock[0].TransactionPosition)
+	s.Require().Equal("call", traceBlock[0].Type)
+	s.Require().Equal("call", traceBlock[0].Action.CallType)
+	s.Require().Equal("0x582f117659196232c3838292e4f7514d97f7284a", traceBlock[0].Action.From)
+	s.Require().Equal("0x60d85853f4d465d150710bd1e74593d588d0ae63", traceBlock[0].Action.To)
+	s.Require().Equal(newBigInt("5498982048143680000"), traceBlock[0].Action.Value)
+	s.Require().Equal("0x", traceBlock[0].Action.Input)
+	s.Require().Equal(0, traceBlock[0].Action.Gas)
+	s.Require().Equal(0, traceBlock[0].Result.GasUsed)
+	s.Require().Equal("0x", traceBlock[0].Result.Output)
+}
+
 func TestEthRPCTestSuite(t *testing.T) {
 	suite.Run(t, new(EthRPCTestSuite))
 }
