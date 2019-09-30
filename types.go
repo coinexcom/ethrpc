@@ -336,10 +336,22 @@ type proxyTraceTransaction struct {
 		Input    string `json:"input"`
 		Value    hexBig `json:"value"`
 		Gas      hexInt `json:"gas"`
+		// Init string `json:"init"` not need return create action
+
+		// reward
+		Author     string `json:"author"`
+		RewardType string `json:"rewardType"`
+
+		// suicide
+		Address       string `json:"address"`
+		RefundAddress string `json:"refundAddress"`
+		Balance       hexBig `json:"balance"`
 	} `json:"action"`
 	Result struct {
 		GasUsed hexInt `json:"gasUsed"`
 		Output  string `json:"output"`
+		Address string `json:"address"`
+		// Code string `json:"code"` not need return create action
 	} `json:"result"`
 	TraceAddress []int `json:"traceAddress"`
 }
@@ -353,16 +365,22 @@ type TraceTransaction struct {
 	TransactionPosition int
 	Type                string
 	Action              struct {
-		CallType string
-		From     string
-		To       string
-		Input    string
-		Value    big.Int
-		Gas      int
+		CallType      string
+		From          string
+		To            string
+		Input         string
+		Value         big.Int
+		Gas           int
+		Author        string
+		RewardType    string
+		Address       string
+		RefundAddress string
+		Balance       big.Int
 	}
 	Result struct {
 		GasUsed int
 		Output  string
+		Address string
 	}
 	TraceAddress []int
 }

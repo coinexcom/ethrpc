@@ -1170,6 +1170,36 @@ func (s *EthRPCTestSuite) TestGetTraceBlock() {
 		"transactionHash": "0x040c48a8b70d2d6d5fdebba5a85e5fc0d6167491691c866635165185ad94d88e",
 		"transactionPosition": 0,
 		"type": "call"
+	  },{
+		"action": {
+		  "address": "0x28e01d4c2b01bc60da0e8c63bb7ea35d7bd6f78d",
+		  "balance": "0x38d7ea4c680000",
+		  "refundAddress": "0x5194b63f10691e46635b27925100cfc0a5ceca62"
+		},
+		"blockHash": "0x84988c53c11ac3c5cdf082a5ef03d4f44fd4ba43543a981047a09dd8746dc14e",
+		"blockNumber": 4904994,
+		"result": null,
+		"subtraces": 0,
+		"traceAddress": [
+		  0
+		],
+		"transactionHash": "0x127e2a249015c61e1748058ae3a5e4c412614e2cf439b2721fab712fc8e67ebe",
+		"transactionPosition": 0,
+		"type": "suicide"
+	  },{
+		"action": {
+		  "author": "0xd1aeb42885a43b72b518182ef893125814811048",
+		  "rewardType": "block",
+		  "value": "0x4563918244f40000"
+		},
+		"blockHash": "0x41800b5c3f1717687d85fc9018faac0a6e90b39deaa0b99e7fe4fe796ddeb26a",
+		"blockNumber": 1,
+		"result": null,
+		"subtraces": 0,
+		"traceAddress": [],
+		"transactionHash": null,
+		"transactionPosition": null,
+		"type": "reward"
 	  }]`
 	s.registerResponse(result, func(body []byte) {
 		s.methodEqual(body, "trace_block")
@@ -1192,6 +1222,60 @@ func (s *EthRPCTestSuite) TestGetTraceBlock() {
 	s.Require().Equal(0, traceBlock[0].Action.Gas)
 	s.Require().Equal(0, traceBlock[0].Result.GasUsed)
 	s.Require().Equal("0x", traceBlock[0].Result.Output)
+
+	s.Require().Equal("suicide", traceBlock[1].Type)
+	s.Require().Equal("0x28e01d4c2b01bc60da0e8c63bb7ea35d7bd6f78d", traceBlock[1].Action.Address)
+	s.Require().Equal("0x5194b63f10691e46635b27925100cfc0a5ceca62", traceBlock[1].Action.RefundAddress)
+	s.Require().Equal(newBigInt("16000000000000000"), traceBlock[1].Action.Balance)
+
+	s.Require().Equal("reward",traceBlock[2].Type)
+	s.Require().Equal("0xd1aeb42885a43b72b518182ef893125814811048",traceBlock[2].Action.Author)
+	s.Require().Equal("block",traceBlock[2].Action.RewardType)
+}
+
+func (s *EthRPCTestSuite) TestTraceTransaction() {
+	result := `{
+		"action": {
+		  "callType": "call",
+		  "from": "0x582f117659196232c3838292e4f7514d97f7284a",
+		  "gas": "0x0",
+		  "input": "0x",
+		  "to": "0x60d85853f4d465d150710bd1e74593d588d0ae63",
+		  "value": "0x4c504f09b5daa200"
+		},
+		"blockHash": "0x388a7248cfd412269a370c6703c8062db1b3bd3635da441e9388a8f7637936c4",
+		"blockNumber": 149817,
+		"result": {
+		  "gasUsed": "0x0",
+		  "output": "0x"
+		},
+		"subtraces": 0,
+		"traceAddress": [],
+		"transactionHash": "0x040c48a8b70d2d6d5fdebba5a85e5fc0d6167491691c866635165185ad94d88e",
+		"transactionPosition": 0,
+		"type": "call"
+	  }`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "trace_transaction")
+		s.paramsEqual(body, fmt.Sprintf(`["0x040c48a8b70d2d6d5fdebba5a85e5fc0d6167491691c866635165185ad94d88e"]`))
+	})
+
+	traceTransaction, err := s.rpc.ParityTraceTransaction("0x040c48a8b70d2d6d5fdebba5a85e5fc0d6167491691c866635165185ad94d88e")
+	s.Require().Nil(err)
+	s.Require().Equal("0x388a7248cfd412269a370c6703c8062db1b3bd3635da441e9388a8f7637936c4", traceTransaction.BlockHash)
+	s.Require().Equal(149817, traceTransaction.BlockNumber)
+	s.Require().Equal(0, traceTransaction.Subtraces)
+	s.Require().Equal("0x040c48a8b70d2d6d5fdebba5a85e5fc0d6167491691c866635165185ad94d88e", traceTransaction.TransactionHash)
+	s.Require().Equal(0, traceTransaction.TransactionPosition)
+	s.Require().Equal("call", traceTransaction.Type)
+	s.Require().Equal("call", traceTransaction.Action.CallType)
+	s.Require().Equal("0x582f117659196232c3838292e4f7514d97f7284a", traceTransaction.Action.From)
+	s.Require().Equal("0x60d85853f4d465d150710bd1e74593d588d0ae63", traceTransaction.Action.To)
+	s.Require().Equal(newBigInt("5498982048143680000"), traceTransaction.Action.Value)
+	s.Require().Equal("0x", traceTransaction.Action.Input)
+	s.Require().Equal(0, traceTransaction.Action.Gas)
+	s.Require().Equal(0, traceTransaction.Result.GasUsed)
+	s.Require().Equal("0x", traceTransaction.Result.Output)
 }
 
 func TestEthRPCTestSuite(t *testing.T) {
