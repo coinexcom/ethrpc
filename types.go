@@ -329,6 +329,7 @@ type proxyTraceTransaction struct {
 	TransactionHash     string `json:"transactionHash"`
 	TransactionPosition int    `json:"transactionPosition"`
 	Type                string `json:"type"`
+	Error               string `json:"error"`
 	Action              struct {
 		CallType string `json:"callType"`
 		From     string `json:"from"`
@@ -364,6 +365,7 @@ type TraceTransaction struct {
 	TransactionHash     string
 	TransactionPosition int
 	Type                string
+	Error               string
 	Action              struct {
 		CallType      string
 		From          string
