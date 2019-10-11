@@ -489,6 +489,13 @@ func (rpc *EthRPC) EthGetFilterChanges(filterID string) ([]Log, error) {
 	return logs, err
 }
 
+// EthGetPendingFilterChanges return string
+func (rpc *EthRPC) EthGetPendingFilterChanges(filterID string) ([]string, error) {
+	var hashes = []string{}
+	err := rpc.call("eth_getFilterChanges", &hashes, filterID)
+	return hashes, err
+}
+
 // EthGetFilterLogs returns an array of all logs matching filter with given id.
 func (rpc *EthRPC) EthGetFilterLogs(filterID string) ([]Log, error) {
 	var logs = []Log{}

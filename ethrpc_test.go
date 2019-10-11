@@ -1059,6 +1059,23 @@ func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	}, logs)
 }
 
+func (s *EthRPCTestSuite) TestEthGetPendingFilterChanges() {
+	filterID := "0x1"
+	result := `["0x04b663c9a22734d0ce1bf33fd3a626b95ea5ed01a5837e289e1a17289ba14566",
+		"0x0667913c4328fbee30ec466b51743b0aea95e041726124a96eafd47fe67fb8e4",
+		"0xf72a4f46c37006eb9470f5576d564f8063f60f84f1d902a84cbba91911d620d1"]`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "eth_getFilterChanges")
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterID))
+	})
+
+	hashes, err := s.rpc.EthGetPendingFilterChanges(filterID)
+	s.Require().Nil(err)
+	s.Require().Equal([]string{"0x04b663c9a22734d0ce1bf33fd3a626b95ea5ed01a5837e289e1a17289ba14566",
+		"0x0667913c4328fbee30ec466b51743b0aea95e041726124a96eafd47fe67fb8e4",
+		"0xf72a4f46c37006eb9470f5576d564f8063f60f84f1d902a84cbba91911d620d1"}, hashes)
+}
+
 func (s *EthRPCTestSuite) TestEthGetFilterLogs() {
 	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
 	result := `[{
@@ -1334,7 +1351,7 @@ func (s *EthRPCTestSuite) TestGetPendingTransactions() {
 	s.Require().Nil(pendingTransactions[0].TransactionIndex)
 	s.Require().Nil(pendingTransactions[1].BlockHash)
 	s.Require().Nil(pendingTransactions[1].BlockNumber)
-	s.Require().Equal("0x2cd365eb17523c928d0adcd5895bc1820ee5e99e",*pendingTransactions[1].Creates)
+	s.Require().Equal("0x2cd365eb17523c928d0adcd5895bc1820ee5e99e", *pendingTransactions[1].Creates)
 	s.Require().Nil(pendingTransactions[1].TransactionIndex)
 
 	s.Require().Equal("0x687422eea2cb73b5d3e242ba5456b782919afc85", pendingTransactions[0].From)
