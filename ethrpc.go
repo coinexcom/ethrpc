@@ -517,6 +517,13 @@ func (rpc *EthRPC) ParityTraceTransaction(hash string) (TraceTransaction, error)
 	return traceTx, err
 }
 
+// ParityPendingTransaction returns trace_transaction result like ParityTraceBlock
+func (rpc *EthRPC) ParityPendingTransaction() ([]PendingTransaction, error) {
+	var pendingTx = []PendingTransaction{}
+	err := rpc.call("parity_pendingTransactions", &pendingTx)
+	return pendingTx, err
+}
+
 // Eth1 returns 1 ethereum value (10^18 wei)
 func (rpc *EthRPC) Eth1() *big.Int {
 	return Eth1()

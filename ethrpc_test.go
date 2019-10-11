@@ -1228,9 +1228,9 @@ func (s *EthRPCTestSuite) TestGetTraceBlock() {
 	s.Require().Equal("0x5194b63f10691e46635b27925100cfc0a5ceca62", traceBlock[1].Action.RefundAddress)
 	s.Require().Equal(newBigInt("16000000000000000"), traceBlock[1].Action.Balance)
 
-	s.Require().Equal("reward",traceBlock[2].Type)
-	s.Require().Equal("0xd1aeb42885a43b72b518182ef893125814811048",traceBlock[2].Action.Author)
-	s.Require().Equal("block",traceBlock[2].Action.RewardType)
+	s.Require().Equal("reward", traceBlock[2].Type)
+	s.Require().Equal("0xd1aeb42885a43b72b518182ef893125814811048", traceBlock[2].Action.Author)
+	s.Require().Equal("block", traceBlock[2].Action.RewardType)
 }
 
 func (s *EthRPCTestSuite) TestTraceTransaction() {
@@ -1276,6 +1276,74 @@ func (s *EthRPCTestSuite) TestTraceTransaction() {
 	s.Require().Equal(0, traceTransaction.Action.Gas)
 	s.Require().Equal(0, traceTransaction.Result.GasUsed)
 	s.Require().Equal("0x", traceTransaction.Result.Output)
+}
+
+func (s *EthRPCTestSuite) TestGetPendingTransactions() {
+	result := `[{
+		"blockHash": null,
+		"blockNumber": null,
+		"chainId": null,
+		"condition": null,
+		"creates": null,
+		"from": "0x687422eea2cb73b5d3e242ba5456b782919afc85",
+		"gas": "0x4cb26",
+		"gasPrice": "0x77359400",
+		"hash": "0xf1d3d6d7ed1a63a102b11f3d473cdd0a3f078d1390c5cd7f7c6f3cc59704c3c9",
+		"input": "0x",
+		"nonce": "0xdf7b9",
+		"publicKey": "0x0bd518dd837e6ed3b902452c0075a4f8d09c8a194cf0ecb8012ca419b6f13916ca560cc840413edcd8cd91c43ca6d86a2d1e8b0bd1bb5fa2c35044fbb42a3cd1",
+		"r": "0xb54801a922fde54511658f2a6c944ac9c7b093b5392c9840e3f0e7b1055f9adb",
+		"raw": "0xf86f830df7b984773594008304cb269438a0a3dfc0db830e47c8a55d9962a43c98660a69880de0b6b3a7640000801ba0b54801a922fde54511658f2a6c944ac9c7b093b5392c9840e3f0e7b1055f9adba065d8b3be907bd26823ce283a5bd3971f3e43b2fcbf40a1af6a250f2315d72edd",
+		"s": "0x65d8b3be907bd26823ce283a5bd3971f3e43b2fcbf40a1af6a250f2315d72edd",
+		"standardV": "0x0",
+		"to": "0x38a0a3dfc0db830e47c8a55d9962a43c98660a69",
+		"transactionIndex": null,
+		"v": "0x1b",
+		"value": "0xde0b6b3a7640000"
+	  },{
+		"blockHash": null,
+		"blockNumber": null,
+		"chainId": null,
+		"condition": null,
+		"creates": "0x2cd365eb17523c928d0adcd5895bc1820ee5e99e",
+		"from": "0x7102f44145716dbeb1fd48eb570cbb3ebf264799",
+		"gas": "0x12c701",
+		"gasPrice": "0x3b9aca00",
+		"hash": "0x170514a059dcec4bdc7f5f01110d5946dc9f522a79fe67d4e44064aab0be3873",
+		"input": "",
+		"nonce": "0x5",
+		"publicKey": "0xf126deaa2586afe98b45d62c3704009abe5579e1667e67e08d2118c49a3ac6471cca41720dca7817e33855c780938d54656d9680b72aa96625698b69567c4554",
+		"r": "0x2274d088f16eb6a319007d50b59a813d741e793a4186ab44ab65c7f5bbe4401d",
+		"raw": "",
+		"s": "0x6df906f5e560635a64974423f50edc100e45dd4af6f0eb0150cbf580c1d1aad",
+		"standardV": "0x0",
+		"to": null,
+		"transactionIndex": null,
+		"v": "0x1b",
+		"value": "0x0"
+	  }]`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "parity_pendingTransactions")
+	})
+
+	pendingTransactions, err := s.rpc.ParityPendingTransaction()
+	s.Require().Nil(err)
+	s.Require().Nil(pendingTransactions[0].BlockHash)
+	s.Require().Nil(pendingTransactions[0].BlockNumber)
+	s.Require().Nil(pendingTransactions[0].Creates)
+	s.Require().Nil(pendingTransactions[0].TransactionIndex)
+	s.Require().Nil(pendingTransactions[1].BlockHash)
+	s.Require().Nil(pendingTransactions[1].BlockNumber)
+	s.Require().Equal("0x2cd365eb17523c928d0adcd5895bc1820ee5e99e",*pendingTransactions[1].Creates)
+	s.Require().Nil(pendingTransactions[1].TransactionIndex)
+
+	s.Require().Equal("0x687422eea2cb73b5d3e242ba5456b782919afc85", pendingTransactions[0].From)
+	s.Require().Equal(314150, pendingTransactions[0].Gas)
+	s.Require().Equal(*big.NewInt(2000000000), pendingTransactions[0].GasPrice)
+	s.Require().Equal("0xf1d3d6d7ed1a63a102b11f3d473cdd0a3f078d1390c5cd7f7c6f3cc59704c3c9", pendingTransactions[0].Hash)
+	s.Require().Equal("0x38a0a3dfc0db830e47c8a55d9962a43c98660a69", pendingTransactions[0].To)
+	s.Require().Equal(newBigInt("1000000000000000000"), pendingTransactions[0].Value)
+	s.Require().Equal(newBigInt("0"), pendingTransactions[1].Value)
 }
 
 func TestEthRPCTestSuite(t *testing.T) {

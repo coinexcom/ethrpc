@@ -172,3 +172,95 @@ func TestTransactionReceiptUnmarshal(t *testing.T) {
 	require.Equal(t, 6, receipt.Logs[0].LogIndex)
 	require.Equal(t, false, receipt.Logs[0].Removed)
 }
+
+func TestTraceTransactionUnmarshal(t *testing.T) {
+	traceTransaction := new(TraceTransaction)
+	err := json.Unmarshal([]byte("[1]"), traceTransaction)
+	require.NotNil(t, err)
+
+	data := []byte(`{
+		"action": {
+		  "callType": "call",
+		  "from": "0x2a98c5f40bfa3dee83431103c535f6fae9a8ad38",
+		  "gas": "0x108ba",
+		  "input": "0x13bc6d4b0000000000000000000000003e9286eafa2db8101246c2131c09b49080d00690",
+		  "to": "0x2cccf5e0538493c235d1c5ef6580f77d99e91396",
+		  "value": "0x0"
+		},
+		"blockHash": "0xe164855d004c5a4e2dcbd4e4b2666f98888b301258bf02596bf62308d2bc1ebb",
+		"blockNumber": 61363,
+		"result": {
+		  "gasUsed": "0x24d",
+		  "output": "0x0000000000000000000000000000000000000000000000000000000000000001"
+		},
+		"subtraces": 0,
+		"traceAddress": [
+		  1,
+		  3,
+		  11,
+		  0
+		],
+		"transactionHash": "0x6c7f1e3a4ccbb2d3e6f49ef8c9c759c039f0aee0507931e874df473e8282c98a",
+		"transactionPosition": 3,
+		"type": "call"
+	  }`)
+
+	err = json.Unmarshal(data, traceTransaction)
+	require.Equal(t, "call", traceTransaction.Type)
+	require.Equal(t, 3, traceTransaction.TransactionPosition)
+	require.Equal(t, "0x6c7f1e3a4ccbb2d3e6f49ef8c9c759c039f0aee0507931e874df473e8282c98a", traceTransaction.TransactionHash)
+	require.Equal(t, []int{1, 3, 11, 0}, traceTransaction.TraceAddress)
+	require.Equal(t, 0, traceTransaction.Subtraces)
+	require.Equal(t, 589, traceTransaction.Result.GasUsed)
+	require.Equal(t, 61363, traceTransaction.BlockNumber)
+	require.Equal(t, "0xe164855d004c5a4e2dcbd4e4b2666f98888b301258bf02596bf62308d2bc1ebb", traceTransaction.BlockHash)
+	require.Equal(t, "0x2a98c5f40bfa3dee83431103c535f6fae9a8ad38", traceTransaction.Action.From)
+	require.Equal(t, "0x2cccf5e0538493c235d1c5ef6580f77d99e91396", traceTransaction.Action.To)
+	require.Equal(t, 67770, traceTransaction.Action.Gas)
+	require.Equal(t, *big.NewInt(0), traceTransaction.Action.Value)
+}
+
+
+func TestPendingTransactionUnmarshal(t *testing.T) {
+	pendingTransaction := new(PendingTransaction)
+	err := json.Unmarshal([]byte("[1]"), pendingTransaction)
+	require.NotNil(t, err)
+
+	data := []byte(`{
+		"blockHash": null,
+		"blockNumber": null,
+		"chainId": null,
+		"condition": null,
+		"creates": null,
+		"from": "0x687422eea2cb73b5d3e242ba5456b782919afc85",
+		"gas": "0x4cb26",
+		"gasPrice": "0x77359400",
+		"hash": "0xf1d3d6d7ed1a63a102b11f3d473cdd0a3f078d1390c5cd7f7c6f3cc59704c3c9",
+		"input": "0x",
+		"nonce": "0xdf7b9",
+		"publicKey": "0x0bd518dd837e6ed3b902452c0075a4f8d09c8a194cf0ecb8012ca419b6f13916ca560cc840413edcd8cd91c43ca6d86a2d1e8b0bd1bb5fa2c35044fbb42a3cd1",
+		"r": "0xb54801a922fde54511658f2a6c944ac9c7b093b5392c9840e3f0e7b1055f9adb",
+		"raw": "0xf86f830df7b984773594008304cb269438a0a3dfc0db830e47c8a55d9962a43c98660a69880de0b6b3a7640000801ba0b54801a922fde54511658f2a6c944ac9c7b093b5392c9840e3f0e7b1055f9adba065d8b3be907bd26823ce283a5bd3971f3e43b2fcbf40a1af6a250f2315d72edd",
+		"s": "0x65d8b3be907bd26823ce283a5bd3971f3e43b2fcbf40a1af6a250f2315d72edd",
+		"standardV": "0x0",
+		"to": "0x38a0a3dfc0db830e47c8a55d9962a43c98660a69",
+		"transactionIndex": null,
+		"v": "0x1b",
+		"value": "0xde0b6b3a7640000"
+	  }`)
+
+	err = json.Unmarshal(data, pendingTransaction)
+	
+	require.Nil(t, err)
+	require.Nil(t,pendingTransaction.BlockHash)
+	require.Nil(t,pendingTransaction.BlockNumber)
+	require.Nil(t,pendingTransaction.Creates)
+	require.Nil(t,pendingTransaction.TransactionIndex)
+	require.Equal(t, "0x687422eea2cb73b5d3e242ba5456b782919afc85", pendingTransaction.From)
+	require.Equal(t, 314150, pendingTransaction.Gas)
+	require.Equal(t, *big.NewInt(2000000000), pendingTransaction.GasPrice)
+	require.Equal(t, "0xf1d3d6d7ed1a63a102b11f3d473cdd0a3f078d1390c5cd7f7c6f3cc59704c3c9", pendingTransaction.Hash)
+	require.Equal(t, 915385, pendingTransaction.Nonce)
+	require.Equal(t, "0x38a0a3dfc0db830e47c8a55d9962a43c98660a69", pendingTransaction.To)
+	require.Equal(t, newBigInt("1000000000000000000"), pendingTransaction.Value)
+}

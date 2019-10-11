@@ -398,3 +398,44 @@ func (t *TraceTransaction) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+type proxyPendingTransaction struct {
+	Hash             string  `json:"hash"`
+	Nonce            hexInt  `json:"nonce"`
+	BlockHash        *string  `json:"blockHash"`
+	BlockNumber      *hexInt  `json:"blockNumber"`
+	TransactionIndex *hexInt `json:"transactionIndex"`
+	From             string  `json:"from"`
+	To               string  `json:"to"`
+	Value            hexBig  `json:"value"`
+	GasPrice         hexBig  `json:"gasPrice"`
+	Gas              hexInt  `json:"gas"`
+	Creates          *string  `json:"creates"`
+}
+
+// PendingTransaction 队列中的交易
+type PendingTransaction struct {
+	Hash             string
+	Nonce            int
+	BlockHash        *string
+	BlockNumber      *int
+	TransactionIndex *int
+	From             string
+	To               string
+	Value            big.Int
+	GasPrice         big.Int
+	Gas              int
+	Creates          *string
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface.
+func (t *PendingTransaction) UnmarshalJSON(data []byte) error {
+	proxy := new(proxyPendingTransaction)
+	if err := json.Unmarshal(data, proxy); err != nil {
+		return err
+	}
+
+	*t = *(*PendingTransaction)(unsafe.Pointer(proxy))
+
+	return nil
+}
