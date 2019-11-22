@@ -45,6 +45,10 @@ type EthereumAPI interface {
 	EthGetFilterChanges(filterID string) ([]Log, error)
 	EthGetFilterLogs(filterID string) ([]Log, error)
 	EthGetLogs(params FilterParams) ([]Log, error)
+
+	ParityTraceBlock(number int) ([]TraceTransaction, error)
+	ParityTraceTransaction(hash string) (TraceTransaction, error)
+	ParityPendingTransaction() ([]PendingTransaction, error)
 }
 
 var _ EthereumAPI = (*EthRPC)(nil)
