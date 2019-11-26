@@ -43,6 +43,7 @@ type EthereumAPI interface {
 	EthNewPendingTransactionFilter() (string, error)
 	EthUninstallFilter(filterID string) (bool, error)
 	EthGetFilterChanges(filterID string) ([]Log, error)
+	EthGetPendingFilterChanges(filterID string) ([]string, error)
 	EthGetFilterLogs(filterID string) ([]Log, error)
 	EthGetLogs(params FilterParams) ([]Log, error)
 
