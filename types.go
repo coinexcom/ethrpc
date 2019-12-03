@@ -408,6 +408,7 @@ type proxyPendingTransaction struct {
 	From             string  `json:"from"`
 	To               string  `json:"to"`
 	Value            hexBig  `json:"value"`
+	Input            string  `json:"input"`
 	GasPrice         hexBig  `json:"gasPrice"`
 	Gas              hexInt  `json:"gas"`
 	Creates          *string  `json:"creates"`
@@ -423,6 +424,7 @@ type PendingTransaction struct {
 	From             string
 	To               string
 	Value            big.Int
+	Input            string
 	GasPrice         big.Int
 	Gas              int
 	Creates          *string
