@@ -277,6 +277,17 @@ func (rpc *EthRPC) EthGetTransactionCount(address, block string) (int, error) {
 	return ParseInt(response)
 }
 
+// EthGetTransactionCount returns the number of transactions sent from an address.
+func (rpc *EthRPC) ParityNextNonce(address string) (int, error) {
+	var response string
+
+	if err := rpc.call("parity_nextNonce", &response, address); err != nil {
+		return 0, err
+	}
+
+	return ParseInt(response)
+}
+
 // EthGetBlockTransactionCountByHash returns the number of transactions in a block from a block matching the given block hash.
 func (rpc *EthRPC) EthGetBlockTransactionCountByHash(hash string) (int, error) {
 	var response string
