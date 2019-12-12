@@ -72,7 +72,12 @@ func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}
 		return nil
 	}
 
-	return json.Unmarshal(result, target)
+	// return
+	err = json.Unmarshal(result, target)
+	if err != nil {
+		return fmt.Errorf("call parse err <%v> data <%s>", err, string(result))
+	}
+	return nil
 }
 
 // URL returns client url
@@ -540,6 +545,15 @@ func (rpc *EthRPC) ParityPendingTransaction() ([]PendingTransaction, error) {
 	var pendingTx = []PendingTransaction{}
 	err := rpc.call("parity_pendingTransactions", &pendingTx)
 	return pendingTx, err
+}
+
+// EthChainID returns chainid
+func (rpc *EthRPC) EthChainID() (int, error) {
+	var response string
+	if err := rpc.call("eth_chainId", &response); err != nil {
+		return 0, err
+	}
+	return ParseInt(response)
 }
 
 // Eth1 returns 1 ethereum value (10^18 wei)

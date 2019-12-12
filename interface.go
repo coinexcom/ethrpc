@@ -51,6 +51,7 @@ type EthereumAPI interface {
 	ParityTraceBlock(number int) ([]TraceTransaction, error)
 	ParityTraceTransaction(hash string) (TraceTransaction, error)
 	ParityPendingTransaction() ([]PendingTransaction, error)
+	EthChainID() (int, error)
 }
 
 var _ EthereumAPI = (*EthRPC)(nil)
