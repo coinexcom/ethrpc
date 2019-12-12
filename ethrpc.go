@@ -542,6 +542,15 @@ func (rpc *EthRPC) ParityPendingTransaction() ([]PendingTransaction, error) {
 	return pendingTx, err
 }
 
+// EthChainID returns chainid
+func (rpc *EthRPC) EthChainID() (int, error) {
+	var response string
+	if err := rpc.call("eth_chainId", &response); err != nil {
+		return 0, err
+	}
+	return ParseInt(response)
+}
+
 // Eth1 returns 1 ethereum value (10^18 wei)
 func (rpc *EthRPC) Eth1() *big.Int {
 	return Eth1()
