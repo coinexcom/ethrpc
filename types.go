@@ -132,7 +132,7 @@ type TransactionReceipt struct {
 	TransactionHash   string
 	TransactionIndex  int
 	BlockHash         string
-	BlockNumber       int
+	BlockNumber       *int
 	CumulativeGasUsed int
 	GasUsed           int
 	ContractAddress   string
