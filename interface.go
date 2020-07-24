@@ -50,6 +50,7 @@ type EthereumAPI interface {
 
 	ParityTraceBlock(number int) ([]TraceTransaction, error)
 	ParityTraceTransaction(hash string) (TraceTransaction, error)
+	ParityRemoveTransaction(hash string) (bool, error)
 	ParityPendingTransaction() ([]PendingTransaction, error)
 	EthChainID() (int, error)
 }

@@ -540,6 +540,19 @@ func (rpc *EthRPC) ParityTraceTransaction(hash string) (TraceTransaction, error)
 	return traceTx, err
 }
 
+// ParityRemoveTransaction remove local transaction
+func (rpc *EthRPC) ParityRemoveTransaction(hash string) (bool, error) {
+	var txes []Transaction
+	err := rpc.call("parity_removeTransaction", &txes, hash)
+	if err != nil {
+		return false, err
+	}
+	if len(txes) > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
 // ParityPendingTransaction returns trace_transaction result like ParityTraceBlock
 func (rpc *EthRPC) ParityPendingTransaction() ([]PendingTransaction, error) {
 	var pendingTx = []PendingTransaction{}
