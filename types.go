@@ -210,17 +210,17 @@ type proxyLog struct {
 }
 
 type proxyTransactionReceipt struct {
-	TransactionHash   string `json:"transactionHash"`
-	TransactionIndex  hexInt `json:"transactionIndex"`
-	BlockHash         string `json:"blockHash"`
-	BlockNumber       hexInt `json:"blockNumber"`
-	CumulativeGasUsed hexInt `json:"cumulativeGasUsed"`
-	GasUsed           hexInt `json:"gasUsed"`
-	ContractAddress   string `json:"contractAddress,omitempty"`
-	Logs              []Log  `json:"logs"`
-	LogsBloom         string `json:"logsBloom"`
-	Root              string `json:"root"`
-	Status            string `json:"status,omitempty"`
+	TransactionHash   string  `json:"transactionHash"`
+	TransactionIndex  hexInt  `json:"transactionIndex"`
+	BlockHash         string  `json:"blockHash"`
+	BlockNumber       *hexInt `json:"blockNumber"`
+	CumulativeGasUsed hexInt  `json:"cumulativeGasUsed"`
+	GasUsed           hexInt  `json:"gasUsed"`
+	ContractAddress   string  `json:"contractAddress,omitempty"`
+	Logs              []Log   `json:"logs"`
+	LogsBloom         string  `json:"logsBloom"`
+	Root              string  `json:"root"`
+	Status            string  `json:"status,omitempty"`
 }
 
 type hexInt int
@@ -402,8 +402,8 @@ func (t *TraceTransaction) UnmarshalJSON(data []byte) error {
 type proxyPendingTransaction struct {
 	Hash             string  `json:"hash"`
 	Nonce            hexInt  `json:"nonce"`
-	BlockHash        *string  `json:"blockHash"`
-	BlockNumber      *hexInt  `json:"blockNumber"`
+	BlockHash        *string `json:"blockHash"`
+	BlockNumber      *hexInt `json:"blockNumber"`
 	TransactionIndex *hexInt `json:"transactionIndex"`
 	From             string  `json:"from"`
 	To               string  `json:"to"`
@@ -411,7 +411,7 @@ type proxyPendingTransaction struct {
 	Input            string  `json:"input"`
 	GasPrice         hexBig  `json:"gasPrice"`
 	Gas              hexInt  `json:"gas"`
-	Creates          *string  `json:"creates"`
+	Creates          *string `json:"creates"`
 }
 
 // PendingTransaction 队列中的交易
