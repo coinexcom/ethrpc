@@ -96,10 +96,10 @@ func (t *Transaction) UnmarshalJSON(data []byte) error {
 // Log - log object
 type Log struct {
 	Removed          bool
-	LogIndex         int
-	TransactionIndex int
+	LogIndex         *int
+	TransactionIndex *int
 	TransactionHash  string
-	BlockNumber      int
+	BlockNumber      *int
 	BlockHash        string
 	Address          string
 	Data             string
@@ -199,10 +199,10 @@ type proxyTransaction struct {
 
 type proxyLog struct {
 	Removed          bool     `json:"removed"`
-	LogIndex         hexInt   `json:"logIndex"`
-	TransactionIndex hexInt   `json:"transactionIndex"`
+	LogIndex         *hexInt  `json:"logIndex"`
+	TransactionIndex *hexInt  `json:"transactionIndex"`
 	TransactionHash  string   `json:"transactionHash"`
-	BlockNumber      hexInt   `json:"blockNumber"`
+	BlockNumber      *hexInt  `json:"blockNumber"`
 	BlockHash        string   `json:"blockHash"`
 	Address          string   `json:"address"`
 	Data             string   `json:"data"`
