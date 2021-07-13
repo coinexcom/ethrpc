@@ -53,6 +53,9 @@ type EthereumAPI interface {
 	ParityRemoveTransaction(hash string) (bool, error)
 	ParityPendingTransaction() ([]PendingTransaction, error)
 	EthChainID() (int, error)
+
+	// geth debug api
+	DebugTraceBlockByNumber(number int) (CallTracerByBlock, error)
 }
 
 var _ EthereumAPI = (*EthRPC)(nil)

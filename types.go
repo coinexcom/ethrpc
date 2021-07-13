@@ -441,3 +441,69 @@ func (t *PendingTransaction) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+type proxyCallTracer struct {
+	Type            string             `json:"type"`
+	From            string             `json:"from"`
+	To              string             `json:"to"`
+	Input           string             `json:"input"`
+	Output          string             `json:"output"`
+	TransactionHash string             `json:"tx_hash,omitempty"`
+	Gas             hexInt             `json:"gas,omitempty"`
+	GasUsed         hexInt             `json:"gasUsed,omitempty"`
+	Value           hexBig             `json:"value,omitempty"`
+	Error           string             `json:"error,omitempty"`
+	Calls           []*proxyCallTracer `json:"calls,omitempty"`
+}
+
+func (proxy *proxyCallTracer) toCallTracer() *CallTracer {
+	callTrace := new(CallTracer)
+	callTrace.Type = proxy.Type
+	callTrace.From = proxy.From
+	callTrace.To = proxy.To
+	callTrace.Input = proxy.Input
+	callTrace.Output = proxy.Output
+	callTrace.TransactionHash = proxy.TransactionHash
+	callTrace.Gas = int(proxy.Gas)
+	callTrace.GasUsed = int(proxy.GasUsed)
+	callTrace.Value = big.Int(proxy.Value)
+	callTrace.Error = proxy.Error
+	if len(proxy.Calls) != 0 {
+		callTrace.Calls = make([]*CallTracer, 0, len(proxy.Calls))
+		for i := range proxy.Calls {
+			callTrace.Calls = append(callTrace.Calls, proxy.Calls[i].toCallTracer())
+		}
+	}
+	return callTrace
+}
+
+type proxyCallTracerByBlock []*struct {
+	Result *proxyCallTracer `json:"result"`
+}
+
+type CallTracer struct {
+	Type            string
+	From            string
+	To              string
+	Input           string
+	Output          string
+	TransactionHash string
+	Gas             int
+	GasUsed         int
+	Value           big.Int
+	Error           string
+	Calls           []*CallTracer
+}
+
+type CallTracerByBlock []*struct {
+	Result *CallTracer
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface.
+func (t *proxyCallTracerByBlock) toCallTracerByBlock() CallTracerByBlock {
+	result := make(CallTracerByBlock, 0, len(*t))
+	for i := range *t {
+		result = append(result, &struct{ Result *CallTracer }{Result: (*t)[i].Result.toCallTracer()})
+	}
+	return result
+}
