@@ -68,17 +68,20 @@ func (t T) MarshalJSON() ([]byte, error) {
 
 // Transaction - transaction object
 type Transaction struct {
-	Hash             string
-	Nonce            int
-	BlockHash        string
-	BlockNumber      *int
-	TransactionIndex *int
-	From             string
-	To               string
-	Value            big.Int
-	Gas              int
-	GasPrice         big.Int
-	Input            string
+	Hash                 string
+	Nonce                int
+	BlockHash            string
+	BlockNumber          *int
+	TransactionIndex     *int
+	From                 string
+	To                   string
+	Value                big.Int
+	Gas                  int
+	GasPrice             *big.Int
+	MaxFeePerGas         *big.Int
+	MaxPriorityFeePerGas *big.Int
+	Type                 *int
+	Input                string
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -135,6 +138,7 @@ type TransactionReceipt struct {
 	BlockNumber       *int
 	CumulativeGasUsed int
 	GasUsed           int
+	EffectiveGasPrice *big.Int
 	ContractAddress   string
 	Logs              []Log
 	LogsBloom         string
@@ -171,6 +175,7 @@ type Block struct {
 	Size             int
 	GasLimit         int
 	GasUsed          int
+	BaseFeePerGas    *big.Int
 	Timestamp        int
 	Uncles           []string
 	Transactions     []Transaction
@@ -184,17 +189,20 @@ type proxySyncing struct {
 }
 
 type proxyTransaction struct {
-	Hash             string  `json:"hash"`
-	Nonce            hexInt  `json:"nonce"`
-	BlockHash        string  `json:"blockHash"`
-	BlockNumber      *hexInt `json:"blockNumber"`
-	TransactionIndex *hexInt `json:"transactionIndex"`
-	From             string  `json:"from"`
-	To               string  `json:"to"`
-	Value            hexBig  `json:"value"`
-	Gas              hexInt  `json:"gas"`
-	GasPrice         hexBig  `json:"gasPrice"`
-	Input            string  `json:"input"`
+	Hash                 string  `json:"hash"`
+	Nonce                hexInt  `json:"nonce"`
+	BlockHash            string  `json:"blockHash"`
+	BlockNumber          *hexInt `json:"blockNumber"`
+	TransactionIndex     *hexInt `json:"transactionIndex"`
+	From                 string  `json:"from"`
+	To                   string  `json:"to"`
+	Value                hexBig  `json:"value"`
+	Gas                  hexInt  `json:"gas"`
+	GasPrice             *hexBig `json:"gasPrice"`
+	MaxFeePerGas         *hexBig `json:"maxFeePerGas"`
+	MaxPriorityFeePerGas *hexBig `json:"maxPriorityFeePerGas"`
+	Type                 *hexInt `json:"type"`
+	Input                string  `json:"input"`
 }
 
 type proxyLog struct {
@@ -216,6 +224,7 @@ type proxyTransactionReceipt struct {
 	BlockNumber       *hexInt `json:"blockNumber"`
 	CumulativeGasUsed hexInt  `json:"cumulativeGasUsed"`
 	GasUsed           hexInt  `json:"gasUsed"`
+	EffectiveGasPrice *hexBig `json:"effectiveGasPrice"`
 	ContractAddress   string  `json:"contractAddress,omitempty"`
 	Logs              []Log   `json:"logs"`
 	LogsBloom         string  `json:"logsBloom"`
@@ -261,6 +270,7 @@ type proxyBlockWithTransactions struct {
 	Size             hexInt             `json:"size"`
 	GasLimit         hexInt             `json:"gasLimit"`
 	GasUsed          hexInt             `json:"gasUsed"`
+	BaseFeePerGas    *hexBig            `json:"baseFeePerGas"`
 	Timestamp        hexInt             `json:"timestamp"`
 	Uncles           []string           `json:"uncles"`
 	Transactions     []proxyTransaction `json:"transactions"`
@@ -286,6 +296,7 @@ type proxyBlockWithoutTransactions struct {
 	Size             hexInt   `json:"size"`
 	GasLimit         hexInt   `json:"gasLimit"`
 	GasUsed          hexInt   `json:"gasUsed"`
+	BaseFeePerGas    *hexBig  `json:"baseFeePerGas"`
 	Timestamp        hexInt   `json:"timestamp"`
 	Uncles           []string `json:"uncles"`
 	Transactions     []string `json:"transactions"`
