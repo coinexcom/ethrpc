@@ -515,6 +515,7 @@ func (t *proxyCallTracerByBlock) toCallTracerByBlock() CallTracerByBlock {
 	result := make(CallTracerByBlock, 0, len(*t))
 	for i := range *t {
 		if (*t)[i].Result == nil {
+			result = append(result, &struct{ Result *CallTracer }{Result: &CallTracer{}})
 			continue
 		}
 		result = append(result, &struct{ Result *CallTracer }{Result: (*t)[i].Result.toCallTracer()})
