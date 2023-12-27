@@ -132,6 +132,8 @@ type FilterParams struct {
 
 // TransactionReceipt - transaction receipt object
 type TransactionReceipt struct {
+	From              string
+	To                string
 	TransactionHash   string
 	TransactionIndex  int
 	BlockHash         string
@@ -144,6 +146,7 @@ type TransactionReceipt struct {
 	LogsBloom         string
 	Root              string
 	Status            string
+	Type              int
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -218,6 +221,8 @@ type proxyLog struct {
 }
 
 type proxyTransactionReceipt struct {
+	From              string  `json:"from"`
+	To                string  `json:"to"`
 	TransactionHash   string  `json:"transactionHash"`
 	TransactionIndex  hexInt  `json:"transactionIndex"`
 	BlockHash         string  `json:"blockHash"`
@@ -230,6 +235,7 @@ type proxyTransactionReceipt struct {
 	LogsBloom         string  `json:"logsBloom"`
 	Root              string  `json:"root"`
 	Status            string  `json:"status,omitempty"`
+	Type              hexInt  `json:"type"`
 }
 
 type hexInt int
