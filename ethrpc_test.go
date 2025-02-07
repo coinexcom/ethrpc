@@ -31,3 +31,13 @@ func TestEthGetBlockReceipts(t *testing.T) {
 		panic(err)
 	}
 }
+
+func TestEthRPC_EthGetBlockByNumber(t *testing.T) {
+	number := 21769926
+	rpc := NewEthRPC("https://eth.llamarpc.com")
+	got, err := rpc.EthGetBlockByNumber(number, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(got)
+}
