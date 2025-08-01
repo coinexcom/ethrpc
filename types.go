@@ -83,6 +83,7 @@ type Transaction struct {
 	MaxFeePerBlobGas     *big.Int
 	Type                 *int
 	Input                string
+	BlobVersionedHashes  []string
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -216,6 +217,7 @@ type proxyTransaction struct {
 	MaxFeePerBlobGas     *hexBig `json:"maxFeePerBlobGas"`
 	Type                 *hexInt `json:"type"`
 	Input                string  `json:"input"`
+	BlobVersionedHashes  string  `json:"blobVersionedHashes"`
 }
 
 type proxyLog struct {
