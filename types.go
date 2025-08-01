@@ -80,6 +80,7 @@ type Transaction struct {
 	GasPrice             *big.Int
 	MaxFeePerGas         *big.Int
 	MaxPriorityFeePerGas *big.Int
+	MaxFeePerBlobGas     *big.Int
 	Type                 *int
 	Input                string
 }
@@ -212,6 +213,7 @@ type proxyTransaction struct {
 	GasPrice             *hexBig `json:"gasPrice"`
 	MaxFeePerGas         *hexBig `json:"maxFeePerGas"`
 	MaxPriorityFeePerGas *hexBig `json:"maxPriorityFeePerGas"`
+	MaxFeePerBlobGas     *hexBig `json:"maxFeePerBlobGas"`
 	Type                 *hexInt `json:"type"`
 	Input                string  `json:"input"`
 }
