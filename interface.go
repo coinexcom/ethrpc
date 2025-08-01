@@ -24,6 +24,8 @@ type EthereumAPI interface {
 	ParityNextNonce(address string) (int, error)
 	EthGetBlockTransactionCountByHash(hash string) (int, error)
 	EthGetBlockTransactionCountByNumber(number int) (int, error)
+	EthGetBlockReceipts(blockNumber int) ([]*TransactionReceipt, error)
+	EthGetTransactionReceiptsByBlock(blockNumber int) ([]*TransactionReceipt, error)
 	EthGetUncleCountByBlockHash(hash string) (int, error)
 	EthGetUncleCountByBlockNumber(number int) (int, error)
 	EthGetCode(address, block string) (string, error)

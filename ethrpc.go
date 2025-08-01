@@ -460,6 +460,30 @@ func (rpc *EthRPC) EthGetTransactionReceipt(hash string) (*TransactionReceipt, e
 	return transactionReceipt, nil
 }
 
+// EthGetBlockReceipts Returns all transaction receipts for a given block
+func (rpc *EthRPC) EthGetBlockReceipts(blockNumber int) ([]*TransactionReceipt, error) {
+	var receipts []*TransactionReceipt
+
+	err := rpc.call("eth_getBlockReceipts", &receipts, IntToHex(blockNumber))
+	if err != nil {
+		return nil, err
+	}
+
+	return receipts, nil
+}
+
+// EthGetTransactionReceiptsByBlock  Matic Returns all transaction receipts for a given block
+func (rpc *EthRPC) EthGetTransactionReceiptsByBlock(blockNumber int) ([]*TransactionReceipt, error) {
+	var receipts []*TransactionReceipt
+
+	err := rpc.call("eth_getTransactionReceiptsByBlock", &receipts, IntToHex(blockNumber))
+	if err != nil {
+		return nil, err
+	}
+
+	return receipts, nil
+}
+
 // EthGetCompilers returns a list of available compilers in the client.
 func (rpc *EthRPC) EthGetCompilers() ([]string, error) {
 	compilers := []string{}

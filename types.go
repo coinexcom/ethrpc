@@ -132,6 +132,8 @@ type FilterParams struct {
 
 // TransactionReceipt - transaction receipt object
 type TransactionReceipt struct {
+	From              string
+	To                string
 	TransactionHash   string
 	TransactionIndex  int
 	BlockHash         string
@@ -144,6 +146,7 @@ type TransactionReceipt struct {
 	LogsBloom         string
 	Root              string
 	Status            string
+	Type              int
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -179,6 +182,14 @@ type Block struct {
 	Timestamp        int
 	Uncles           []string
 	Transactions     []Transaction
+	Withdrawals      []Withdrawal
+}
+
+type Withdrawal struct {
+	Index          string `json:"index"`          // 16进制编码，0x前缀开头，表示索引
+	ValidatorIndex string `json:"validatorIndex"` // 16进制编码，0x前缀开头，表示质押节点索引
+	Address        string `json:"address"`        // 提取收益的收款地址
+	Amount         string `json:"amount"`         // 16进制编码，0x前缀开头，表示收益金额
 }
 
 type proxySyncing struct {
@@ -218,6 +229,8 @@ type proxyLog struct {
 }
 
 type proxyTransactionReceipt struct {
+	From              string  `json:"from"`
+	To                string  `json:"to"`
 	TransactionHash   string  `json:"transactionHash"`
 	TransactionIndex  hexInt  `json:"transactionIndex"`
 	BlockHash         string  `json:"blockHash"`
@@ -230,6 +243,7 @@ type proxyTransactionReceipt struct {
 	LogsBloom         string  `json:"logsBloom"`
 	Root              string  `json:"root"`
 	Status            string  `json:"status,omitempty"`
+	Type              hexInt  `json:"type"`
 }
 
 type hexInt int
@@ -274,6 +288,7 @@ type proxyBlockWithTransactions struct {
 	Timestamp        hexInt             `json:"timestamp"`
 	Uncles           []string           `json:"uncles"`
 	Transactions     []proxyTransaction `json:"transactions"`
+	Withdrawals      []Withdrawal       `json:"withdrawals"`
 }
 
 func (proxy *proxyBlockWithTransactions) toBlock() Block {
@@ -281,25 +296,26 @@ func (proxy *proxyBlockWithTransactions) toBlock() Block {
 }
 
 type proxyBlockWithoutTransactions struct {
-	Number           hexInt   `json:"number"`
-	Hash             string   `json:"hash"`
-	ParentHash       string   `json:"parentHash"`
-	Nonce            string   `json:"nonce"`
-	Sha3Uncles       string   `json:"sha3Uncles"`
-	LogsBloom        string   `json:"logsBloom"`
-	TransactionsRoot string   `json:"transactionsRoot"`
-	StateRoot        string   `json:"stateRoot"`
-	Miner            string   `json:"miner"`
-	Difficulty       hexBig   `json:"difficulty"`
-	TotalDifficulty  hexBig   `json:"totalDifficulty"`
-	ExtraData        string   `json:"extraData"`
-	Size             hexInt   `json:"size"`
-	GasLimit         hexInt   `json:"gasLimit"`
-	GasUsed          hexInt   `json:"gasUsed"`
-	BaseFeePerGas    *hexBig  `json:"baseFeePerGas"`
-	Timestamp        hexInt   `json:"timestamp"`
-	Uncles           []string `json:"uncles"`
-	Transactions     []string `json:"transactions"`
+	Number           hexInt       `json:"number"`
+	Hash             string       `json:"hash"`
+	ParentHash       string       `json:"parentHash"`
+	Nonce            string       `json:"nonce"`
+	Sha3Uncles       string       `json:"sha3Uncles"`
+	LogsBloom        string       `json:"logsBloom"`
+	TransactionsRoot string       `json:"transactionsRoot"`
+	StateRoot        string       `json:"stateRoot"`
+	Miner            string       `json:"miner"`
+	Difficulty       hexBig       `json:"difficulty"`
+	TotalDifficulty  hexBig       `json:"totalDifficulty"`
+	ExtraData        string       `json:"extraData"`
+	Size             hexInt       `json:"size"`
+	GasLimit         hexInt       `json:"gasLimit"`
+	GasUsed          hexInt       `json:"gasUsed"`
+	BaseFeePerGas    *hexBig      `json:"baseFeePerGas"`
+	Timestamp        hexInt       `json:"timestamp"`
+	Uncles           []string     `json:"uncles"`
+	Transactions     []string     `json:"transactions"`
+	Withdrawals      []Withdrawal `json:"withdrawals"`
 }
 
 func (proxy *proxyBlockWithoutTransactions) toBlock() Block {
@@ -321,6 +337,7 @@ func (proxy *proxyBlockWithoutTransactions) toBlock() Block {
 		GasUsed:          int(proxy.GasUsed),
 		Timestamp:        int(proxy.Timestamp),
 		Uncles:           proxy.Uncles,
+		Withdrawals:      proxy.Withdrawals,
 	}
 
 	block.Transactions = make([]Transaction, len(proxy.Transactions))
