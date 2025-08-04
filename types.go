@@ -180,7 +180,7 @@ type Block struct {
 	Size             int
 	GasLimit         int
 	GasUsed          int
-	BaseFeePerGas    *big.Int
+	BaseFeePerGas    big.Int
 	Timestamp        int
 	Uncles           []string
 	Transactions     []Transaction
@@ -288,7 +288,7 @@ type proxyBlockWithTransactions struct {
 	Size             hexInt             `json:"size"`
 	GasLimit         hexInt             `json:"gasLimit"`
 	GasUsed          hexInt             `json:"gasUsed"`
-	BaseFeePerGas    *hexBig            `json:"baseFeePerGas"`
+	BaseFeePerGas    hexBig             `json:"baseFeePerGas"`
 	Timestamp        hexInt             `json:"timestamp"`
 	Uncles           []string           `json:"uncles"`
 	Transactions     []proxyTransaction `json:"transactions"`
@@ -315,7 +315,7 @@ type proxyBlockWithoutTransactions struct {
 	Size             hexInt       `json:"size"`
 	GasLimit         hexInt       `json:"gasLimit"`
 	GasUsed          hexInt       `json:"gasUsed"`
-	BaseFeePerGas    *hexBig      `json:"baseFeePerGas"`
+	BaseFeePerGas    hexBig       `json:"baseFeePerGas"`
 	Timestamp        hexInt       `json:"timestamp"`
 	Uncles           []string     `json:"uncles"`
 	Transactions     []string     `json:"transactions"`
