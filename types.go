@@ -80,8 +80,10 @@ type Transaction struct {
 	GasPrice             *big.Int
 	MaxFeePerGas         *big.Int
 	MaxPriorityFeePerGas *big.Int
+	MaxFeePerBlobGas     *big.Int
 	Type                 *int
 	Input                string
+	BlobVersionedHashes  []string
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -200,20 +202,22 @@ type proxySyncing struct {
 }
 
 type proxyTransaction struct {
-	Hash                 string  `json:"hash"`
-	Nonce                hexInt  `json:"nonce"`
-	BlockHash            string  `json:"blockHash"`
-	BlockNumber          *hexInt `json:"blockNumber"`
-	TransactionIndex     *hexInt `json:"transactionIndex"`
-	From                 string  `json:"from"`
-	To                   string  `json:"to"`
-	Value                hexBig  `json:"value"`
-	Gas                  hexInt  `json:"gas"`
-	GasPrice             *hexBig `json:"gasPrice"`
-	MaxFeePerGas         *hexBig `json:"maxFeePerGas"`
-	MaxPriorityFeePerGas *hexBig `json:"maxPriorityFeePerGas"`
-	Type                 *hexInt `json:"type"`
-	Input                string  `json:"input"`
+	Hash                 string   `json:"hash"`
+	Nonce                hexInt   `json:"nonce"`
+	BlockHash            string   `json:"blockHash"`
+	BlockNumber          *hexInt  `json:"blockNumber"`
+	TransactionIndex     *hexInt  `json:"transactionIndex"`
+	From                 string   `json:"from"`
+	To                   string   `json:"to"`
+	Value                hexBig   `json:"value"`
+	Gas                  hexInt   `json:"gas"`
+	GasPrice             *hexBig  `json:"gasPrice"`
+	MaxFeePerGas         *hexBig  `json:"maxFeePerGas"`
+	MaxPriorityFeePerGas *hexBig  `json:"maxPriorityFeePerGas"`
+	MaxFeePerBlobGas     *hexBig  `json:"maxFeePerBlobGas"`
+	Type                 *hexInt  `json:"type"`
+	Input                string   `json:"input"`
+	BlobVersionedHashes  []string `json:"blobVersionedHashes"`
 }
 
 type proxyLog struct {
