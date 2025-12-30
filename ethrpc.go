@@ -595,6 +595,12 @@ func (rpc *EthRPC) DebugTraceBlockByNumber(number int) (CallTracerByBlock, error
 	return proxyCallTracerByBlock.toCallTracerByBlock(), err
 }
 
+func (rpc *EthRPC) DebugTraceTransaction(hash string) (*CallTracer, error) {
+	var proxyCallTracer proxyCallTracer
+	err := rpc.call("debug_traceTransaction", &proxyCallTracer, hash, callTracerConfig)
+	return proxyCallTracer.toCallTracer(), err
+}
+
 // EthChainID returns chainid
 func (rpc *EthRPC) EthChainID() (int, error) {
 	var response string
