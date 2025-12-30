@@ -585,8 +585,10 @@ func (rpc *EthRPC) ParityPendingTransaction() ([]PendingTransaction, error) {
 }
 
 var callTracerConfig = struct {
-	Tracer string
-}{Tracer: "callTracer"}
+	Tracer string `json:"tracer"`
+}{
+	Tracer: "callTracer",
+}
 
 // ParityPendingTransaction returns trace_transaction result like ParityTraceBlock
 func (rpc *EthRPC) DebugTraceBlockByNumber(number int) (CallTracerByBlock, error) {
