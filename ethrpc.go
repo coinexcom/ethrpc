@@ -585,14 +585,22 @@ func (rpc *EthRPC) ParityPendingTransaction() ([]PendingTransaction, error) {
 }
 
 var callTracerConfig = struct {
-	Tracer string
-}{Tracer: "callTracer"}
+	Tracer string `json:"tracer"`
+}{
+	Tracer: "callTracer",
+}
 
 // ParityPendingTransaction returns trace_transaction result like ParityTraceBlock
 func (rpc *EthRPC) DebugTraceBlockByNumber(number int) (CallTracerByBlock, error) {
 	var proxyCallTracerByBlock proxyCallTracerByBlock
 	err := rpc.call("debug_traceBlockByNumber", &proxyCallTracerByBlock, IntToHex(number), callTracerConfig)
 	return proxyCallTracerByBlock.toCallTracerByBlock(), err
+}
+
+func (rpc *EthRPC) DebugTraceTransaction(hash string) (*CallTracer, error) {
+	var proxyCallTracer proxyCallTracer
+	err := rpc.call("debug_traceTransaction", &proxyCallTracer, hash, callTracerConfig)
+	return proxyCallTracer.toCallTracer(), err
 }
 
 // EthChainID returns chainid

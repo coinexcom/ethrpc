@@ -58,6 +58,7 @@ type EthereumAPI interface {
 
 	// geth debug api
 	DebugTraceBlockByNumber(number int) (CallTracerByBlock, error)
+	DebugTraceTransaction(hash string) (*CallTracer, error)
 }
 
 var _ EthereumAPI = (*EthRPC)(nil)
